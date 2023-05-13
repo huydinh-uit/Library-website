@@ -28,7 +28,7 @@ public class AdminService {
         this.checkoutRepository = checkoutRepository;
     }
 
-    public void increaseBookQuantity(Long bookId) throws Exception {
+    public void increaseBookQuantity(Long bookId, int n) throws Exception {
 
         Optional<Book> book = bookRepository.findById(bookId);
 
@@ -36,22 +36,23 @@ public class AdminService {
             throw new Exception("Book not found");
         }
 
-        book.get().setCopiesAvailable(book.get().getCopiesAvailable() + 1);
-        book.get().setCopies(book.get().getCopies() + 1);
+        book.get().setCopiesAvailable(book.get().getCopiesAvailable() + n);
+        book.get().setCopies(book.get().getCopies() + n);
 
         bookRepository.save(book.get());
     }
 
-    public void decreaseBookQuantity(Long bookId) throws Exception {
+    public void decreaseBookQuantity(Long bookId, int n) throws Exception {
 
         Optional<Book> book = bookRepository.findById(bookId);
 
-        if (!book.isPresent() || book.get().getCopiesAvailable() <= 0 || book.get().getCopies() <= 0) {
+        if (!book.isPresent() || book.get().getCopiesAvailable() <= 0 || book.get().getCopies() <= 0
+                || book.get().getCopiesAvailable() < n || book.get().getCopies() < n) {
             throw new Exception("Book not found or quantity locked");
         }
 
-        book.get().setCopiesAvailable(book.get().getCopiesAvailable() - 1);
-        book.get().setCopies(book.get().getCopies() - 1);
+        book.get().setCopiesAvailable(book.get().getCopiesAvailable() - n);
+        book.get().setCopies(book.get().getCopies() - n);
 
         bookRepository.save(book.get());
     }
